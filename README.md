@@ -61,4 +61,4 @@ node {
 }
 ```
 
-[Temple Run2 example](templerun2)
+[Temple Run 2 example](templerun2)
