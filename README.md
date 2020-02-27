@@ -1,4 +1,10 @@
-# Jenkinsfile
+```
+docker-compose up -d
+```
+
+Navigate to http://localhost:8090
+
+## Jenkinsfile
 
 ```groovy
 node {
