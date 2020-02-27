@@ -17,14 +17,14 @@ Navigate to http://localhost:8090
 ```groovy
 node {
    stage('Test') {
-       sh '''
+       sh """
        # launch app on device
-       /Android/platform-tools/adb shell cmd activity start-activity -n com.playrix.homescapes/.GoogleActivity
+       /Android/platform-tools/adb shell cmd activity start-activity -n $PACKAGE_NAME/.GoogleActivity
 
        export GBA_BASE_URL=http://localhost:8000
 
        # start recording a session
-       SESSION_ID=$(gba-client session start HT83G1C00069 com.playrix.homescapes)
+       SESSION_ID=$(gba-client session start $DEVICE_ID $PACKAGE_NAME)
 
        # sleep for 20 seconds
        sleep 20
@@ -34,7 +34,7 @@ node {
 
        echo "avg_fps" > data.csv
        cat session.json | jq -r '.summary.avg_fps' >> data.csv
-       '''
+       """
 
        plot csvFileName: 'plot-8e54e334-ab7b-4c9f-94f7-b9d8965723df.csv',
         csvSeries: [[
