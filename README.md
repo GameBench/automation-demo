@@ -6,11 +6,11 @@ Navigate to http://localhost:8090
 
 ## Build list
 
-[!Build list](build-list.png)
+![Build list](/build-list.png)
 
 ## Plot
 
-[!Plot](plot.png)
+![Plot](/plot.png)
 
 ## Jenkinsfile
 
