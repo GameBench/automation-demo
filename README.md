@@ -12,6 +12,10 @@ Navigate to http://localhost:8090
 
 ![Plot](/plot.png)
 
+## In action
+
+![Example](/jenkins-gba.gif)
+
 ## Jenkinsfile
 
 ```groovy
