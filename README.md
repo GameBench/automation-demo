@@ -23,7 +23,7 @@ node {
    stage('Test') {
        sh '''
        # launch app on device
-       /Android/platform-tools/adb shell cmd activity start-activity -n $PACKAGE_NAME/.GoogleActivity
+       /Android/platform-tools/adb shell cmd activity start-activity -n $PACKAGE_NAME/$ACTIVITY
 
        export GBA_BASE_URL=http://localhost:8000
 
