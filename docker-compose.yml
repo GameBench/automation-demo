@@ -1,0 +1,12 @@
+version: '3'
+services:
+  jenkins:
+    build: jenkins
+    network_mode: host
+    volumes:
+    - jenkins-data:/var/jenkins_home
+    environment:
+    - JENKINS_OPTS="--httpPort=8090"
+
+volumes:
+  jenkins-data:
