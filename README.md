@@ -17,7 +17,7 @@ Navigate to http://localhost:8090
 ```groovy
 node {
    stage('Test') {
-       sh """
+       sh '''
        # launch app on device
        /Android/platform-tools/adb shell cmd activity start-activity -n $PACKAGE_NAME/.GoogleActivity
 
@@ -34,7 +34,7 @@ node {
 
        echo "avg_fps" > data.csv
        cat session.json | jq -r '.summary.avg_fps' >> data.csv
-       """
+       '''
 
        plot csvFileName: 'plot-8e54e334-ab7b-4c9f-94f7-b9d8965723df.csv',
         csvSeries: [[
