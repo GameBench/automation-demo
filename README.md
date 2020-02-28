@@ -22,10 +22,10 @@ Navigate to http://localhost:8090
 node {
    stage('Test') {
        sh '''
-       # launch app on device
-       /Android/platform-tools/adb shell cmd activity start-activity -n $PACKAGE_NAME/$ACTIVITY
-
        export GBA_BASE_URL=http://localhost:8000
+
+       # launch app on device
+       gba-client device shell $DEVICE_ID -- cmd activity start-activity -n $PACKAGE_NAME/$ACTIVITY
 
        # start recording a session
        SESSION_ID=$(gba-client session start $DEVICE_ID $PACKAGE_NAME)
@@ -36,7 +36,7 @@ node {
        # stop recording session
        gba-client session stop --output-json $SESSION_ID > session.json
 
-       /Android/platform-tools/adb shell am force-stop $PACKAGE_NAME
+       gba-client device shell $DEVICE_ID -- am force-stop $PACKAGE_NAME
 
        echo "avg_fps" > data.csv
        cat session.json | jq -r '.summary.avg_fps' >> data.csv

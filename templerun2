@@ -1,15 +1,16 @@
 node {
    stage('Test') {
        sh '''
-       # launch app on device
-       /Android/platform-tools/adb shell cmd activity start-activity -n com.imangi.templerun2/com.imangi.unityactivity.ImangiUnityActivity
-       sleep 30
-       /Android/platform-tools/adb shell input tap 485 963
-
+       export DEVICE_ID=HT83G1C00069
        export GBA_BASE_URL=http://localhost:8000
 
+       # launch app on device
+       gba-client device shell $DEVICE_ID -- cmd activity start-activity -n com.imangi.templerun2/com.imangi.unityactivity.ImangiUnityActivity
+       sleep 30
+       gba-client device shell $DEVICE_ID -- input tap 485 963
+
        # start recording a session
-       SESSION_ID=$(gba-client session start HT83G1C00069 com.imangi.templerun2)
+       SESSION_ID=$(gba-client session start $DEVICE_ID com.imangi.templerun2)
 
        # sleep for 20 seconds
        sleep 20
@@ -17,7 +18,7 @@ node {
        # stop recording session
        gba-client session stop --output-json $SESSION_ID > session.json
 
-       /Android/platform-tools/adb shell am force-stop com.imangi.templerun2
+       gba-client device shell $DEVICE_ID -- am force-stop com.imangi.templerun2
 
        echo "avg_fps" > data.csv
        cat session.json | jq -r '.summary.avg_fps' >> data.csv
