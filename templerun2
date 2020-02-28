@@ -1,47 +1,57 @@
-node {
-   stage('Test') {
-       sh '''
-       export DEVICE_ID=HT83G1C00069
-       export GBA_BASE_URL=http://localhost:8000
+pipeline {
+    agent any
+    environment {
+        GBA_BASE_URL = "http://localhost:8000"
+    }
+    stages {
+        stage('Test') {
+            steps {
+                sh '''
+                # launch app on device
+                gba-client device shell HT83G1C00069 -- cmd activity start-activity -n com.imangi.templerun2/com.imangi.unityactivity.ImangiUnityActivity
+                sleep 30
+                gba-client device shell HT83G1C00069 -- input tap 485 963
 
-       # launch app on device
-       gba-client device shell $DEVICE_ID -- cmd activity start-activity -n com.imangi.templerun2/com.imangi.unityactivity.ImangiUnityActivity
-       sleep 30
-       gba-client device shell $DEVICE_ID -- input tap 485 963
+                # start recording a session
+                SESSION_ID=$(gba-client session start HT83G1C00069 com.imangi.templerun2)
 
-       # start recording a session
-       SESSION_ID=$(gba-client session start $DEVICE_ID com.imangi.templerun2)
+                # sleep for 20 seconds
+                sleep 20
 
-       # sleep for 20 seconds
-       sleep 20
+                # stop recording session
+                gba-client session stop --output-json $SESSION_ID > session.json
 
-       # stop recording session
-       gba-client session stop --output-json $SESSION_ID > session.json
+                gba-client device shell HT83G1C00069 -- am force-stop com.imangi.templerun2
 
-       gba-client device shell $DEVICE_ID -- am force-stop com.imangi.templerun2
+                echo "avg_fps" > data.csv
+                cat session.json | jq -r '.summary.avg_fps' >> data.csv
+                '''
 
-       echo "avg_fps" > data.csv
-       cat session.json | jq -r '.summary.avg_fps' >> data.csv
-       '''
-
-       plot csvFileName: 'plot-8e54e334-ab7b-4c9f-94f7-b9d8965723df.csv',
-        csvSeries: [[
-            file: 'data.csv',
-            exclusionValues: '',
-            displayTableFlag: false,
-            inclusionFlag: 'OFF',
-            url: ''
-        ]],
-        group: 'Plot Group',
-        title: 'Average FPS',
-        style: 'line',
-        exclZero: false,
-        keepRecords: false,
-        logarithmic: false,
-        numBuilds: '',
-        useDescr: false,
-        yaxis: '',
-        yaxisMaximum: '',
-        yaxisMinimum: ''
-   }
+                plot csvFileName: 'plot-8e54e334-ab7b-4c9f-94f7-b9d8965723df.csv',
+                 csvSeries: [[
+                     file: 'data.csv',
+                     exclusionValues: '',
+                     displayTableFlag: false,
+                     inclusionFlag: 'OFF',
+                     url: ''
+                 ]],
+                 group: 'Plot Group',
+                 title: 'Average FPS',
+                 style: 'line',
+                 exclZero: false,
+                 keepRecords: false,
+                 logarithmic: false,
+                 numBuilds: '',
+                 useDescr: false,
+                 yaxis: '',
+                 yaxisMaximum: '',
+                 yaxisMinimum: ''
+             }
+         }
+    }
+    post {
+        failure {
+            sh 'gba-client device shell HT83G1C00069 -- am force-stop com.imangi.templerun2'
+        }
+    }
 }
