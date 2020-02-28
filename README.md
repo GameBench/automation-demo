@@ -2,6 +2,8 @@ Demo of automated performance testing with GameBench and Jenkins
 
 https://www.gamebench.net
 
+## Getting started
+
 ```
 docker-compose up -d
 ```
